@@ -103,16 +103,20 @@
                                 <div class="col-md-3">
                                     <div class="btn-group btn-group-sm" role="group">
                                         {% if appointment.status == 'pending' %}
-                                            <button class="btn btn-outline-success btn-sm" 
-                                                    onclick="updateStatus('{{ appointment.id }}', 'confirmed')">
-                                                <i class="fas fa-check"></i> Confirm
-                                            </button>
+                                            <form method="post" action="{% url 'appointments:update_appointment_status' appointment.id %}" style="display: inline;">
+                                                <input type="hidden" name="status" value="confirmed">
+                                                <button type="submit" class="btn btn-outline-success btn-sm">
+                                                    <i class="fas fa-check"></i> Confirm
+                                                </button>
+                                            </form>
                                         {% endif %}
                                         {% if appointment.status == 'confirmed' %}
-                                            <button class="btn btn-outline-primary btn-sm"
-                                                    onclick="updateStatus('{{ appointment.id }}', 'completed')">
-                                                <i class="fas fa-check-double"></i> Complete
-                                            </button>
+                                            <form method="post" action="{% url 'appointments:update_appointment_status' appointment.id %}" style="display: inline;">
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-check-double"></i> Complete
+                                                </button>
+                                            </form>
                                         {% endif %}
                                         <a href="{% url 'appointments:cancel_appointment' appointment.id %}" 
                                            class="btn btn-outline-danger btn-sm"
@@ -261,14 +265,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 {% endif %}
 
-<script>
-function updateStatus(appointmentId, status) {
-    // This would typically make an AJAX call to update appointment status
-    alert('Status update functionality would be implemented here');
-}
-</script>
 {% endblock %}

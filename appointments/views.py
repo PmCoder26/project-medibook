@@ -196,3 +196,28 @@ def cancel_appointment(request, appointment_id):
         return redirect('appointments:patient_dashboard')
     else:
         return redirect('appointments:doctor_dashboard')
+
+
+@login_required
+def update_appointment_status(request, appointment_id):
+    if request.user.user_type != 'doctor':
+        messages.error(request, 'Only doctors can update appointment status.')
+        return redirect('appointments:patient_dashboard')
+    
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    # Check if this doctor owns the appointment
+    if appointment.doctor.user != request.user:
+        messages.error(request, 'You can only update your own appointments.')
+        return redirect('appointments:doctor_dashboard')
+    
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['pending', 'confirmed', 'completed', 'cancelled']:
+            appointment.status = new_status
+            appointment.save()
+            messages.success(request, f'Appointment status updated to {new_status}.')
+        else:
+            messages.error(request, 'Invalid status.')
+    
+    return redirect('appointments:doctor_dashboard')
