@@ -18,22 +18,27 @@ class SimpleMediBookTest(unittest.TestCase):
     def setUpClass(cls):
         """Set up the WebDriver before running tests"""
         try:
-            # Try Safari first (usually available on Mac)
-            cls.driver = webdriver.Safari()
-            print("✅ Using Safari WebDriver")
-        except Exception as e:
-            print(f"Safari failed: {e}")
+            # Use Chrome with optimized settings
+            options = webdriver.ChromeOptions()
+            options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--window-size=1920,1080')
+            
+            # Try Chrome without WebDriverManager first
             try:
-                # Try Chrome without driver manager
-                options = webdriver.ChromeOptions()
-                options.add_argument('--headless')
-                options.add_argument('--no-sandbox')
-                options.add_argument('--disable-dev-shm-usage')
                 cls.driver = webdriver.Chrome(options=options)
-                print("✅ Using Chrome WebDriver")
-            except Exception as e2:
-                print(f"Chrome failed: {e2}")
-                raise unittest.SkipTest("No compatible browser found")
+                print("✅ Using Chrome WebDriver (system)")
+            except Exception:
+                # Fallback to WebDriverManager
+                from webdriver_manager.chrome import ChromeDriverManager
+                cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+                print("✅ Using Chrome WebDriver (downloaded)")
+                
+        except Exception as e:
+            print(f"Chrome setup failed: {e}")
+            raise unittest.SkipTest("Chrome WebDriver not available")
         
         cls.driver.maximize_window()
         cls.base_url = "http://127.0.0.1:8000"

@@ -28,7 +28,7 @@
             <div class="header">
                 <h1>🏥 MediBook Test Execution Report</h1>
                 <p>Comprehensive Automated Testing Results</p>
-                <p><strong>Generated:</strong> 2025-10-09 18:47:27</p>
+                <p><strong>Generated:</strong> 2025-10-09 18:54:02</p>
             </div>
             
             <div class="summary">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="metric">
                     <h3>Execution Time</h3>
-                    <div class="number">28s</div>
+                    <div class="number">79s</div>
                 </div>
                 <div class="metric">
                     <h3>Success Rate</h3>
@@ -76,29 +76,40 @@ Traceback (most recent call last):
                         <span class="status-badge status-success">PASSED</span>
                     </div>
                     <div class="test-output">Chrome setup failed: [Errno 8] Exec format error: '/Users/parimal/.wdm/drivers/chromedriver/mac64/140.0.7339.207/chromedriver-mac-arm64/THIRD_PARTY_NOTICES.chromedriver'
-Safari setup failed: Message: Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.
 
+=== Test Case 1: Valid Patient Login ===
+✓ Patient login successful - redirected to dashboard
 
-==================================================
-LOGIN SYSTEM TESTS SUMMARY
-==================================================
-Tests Run: 0
-Failures:...</div>
+=== Test Case 2: Valid Doctor Login ===
+
+=== Test Case 3: Invalid Username ===
+
+=== Test Case 4: Invalid Password ===
+
+=== Test Case 5: Empty Login Fields ===
+
+=== Test Case 6: Logout Functionality ===
+
+===============================...</div>
                 </div>
         
-                <div class="test-item failure">
+                <div class="test-item success">
                     <div class="test-name">
                         Appointment Booking Tests 
-                        <span class="status-badge status-failure">FAILED</span>
+                        <span class="status-badge status-success">PASSED</span>
                     </div>
-                    <div class="test-output">setUpClass (__main__.TestAppointmentBooking) ... ERROR
+                    <div class="test-output">Chrome setup failed: [Errno 8] Exec format error: '/Users/parimal/.wdm/drivers/chromedriver/mac64/140.0.7339.207/chromedriver-mac-arm64/THIRD_PARTY_NOTICES.chromedriver'
 
-======================================================================
-ERROR: setUpClass (__main__.TestAppointmentBooking)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/Users/parimal/VisualStudioCodeProjects/stqa_project/tests/selenium_tests/test_appointment_booking.py", line 24, in setUpClass
-    cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install(...</div>
+=== Test Case 1: View Doctor List ===
+
+==================================================
+APPOINTMENT BOOKING TESTS SUMMARY
+==================================================
+Tests Run: 7
+Failures: 1
+Errors: 7
+Success Rate: -14.3%
+</div>
                 </div>
         
                 <div class="test-item success">
@@ -107,8 +118,10 @@ Traceback (most recent call last):
                         <span class="status-badge status-success">PASSED</span>
                     </div>
                     <div class="test-output">Chrome setup failed: [Errno 8] Exec format error: '/Users/parimal/.wdm/drivers/chromedriver/mac64/140.0.7339.207/chromedriver-mac-arm64/THIRD_PARTY_NOTICES.chromedriver'
-Safari setup failed: Message: Could not create a session: You must enable 'Allow remote automation' in the Developer section of Safari Settings to control Safari via WebDriver.
 
+=== Patient Registration Critical Path ===
+
+=== Login System Critical Path ===
 </div>
                 </div>
         

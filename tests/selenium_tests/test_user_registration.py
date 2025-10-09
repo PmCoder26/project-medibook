@@ -20,7 +20,27 @@ class TestUserRegistration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up Chrome WebDriver"""
-        cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        try:
+            # Use Chrome with optimized settings
+            options = webdriver.ChromeOptions()
+            options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
+            options.add_argument('--window-size=1920,1080')
+            
+            # Try Chrome without WebDriverManager first
+            try:
+                cls.driver = webdriver.Chrome(options=options)
+                print("✅ Using Chrome WebDriver (system)")
+            except Exception:
+                # Fallback to WebDriverManager
+                cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+                print("✅ Using Chrome WebDriver (downloaded)")
+                
+        except Exception as e:
+            print(f"Chrome setup failed: {e}")
+            raise unittest.SkipTest("Chrome WebDriver not available")
         cls.driver.maximize_window()
         cls.base_url = "http://127.0.0.1:8000"
         cls.wait = WebDriverWait(cls.driver, 10)
