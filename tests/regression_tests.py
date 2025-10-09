@@ -25,8 +25,22 @@ class RegressionTestSuite(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        """Set up test environment"""
-        cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        """Set up the WebDriver before running tests"""
+        try:
+            # Try Chrome with headless mode
+            options = webdriver.ChromeOptions()
+            options.add_argument('--headless')
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            cls.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        except Exception as e:
+            print(f"Chrome setup failed: {e}")
+            try:
+                # Fallback to Safari
+                cls.driver = webdriver.Safari()
+            except Exception as e2:
+                print(f"Safari setup failed: {e2}")
+                raise unittest.SkipTest("No compatible browser found")
         cls.driver.maximize_window()
         cls.base_url = "http://127.0.0.1:8000"
         cls.wait = WebDriverWait(cls.driver, 10)
