@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Appointment - MediBook{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-plus"></i> Book Appointment</h3>
+            </div>
+            <div class="card-body">
+                <!-- Doctor Information -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="doctor-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5><i class="fas fa-user-md text-primary"></i> Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                                    <p class="mb-1"><strong>Specialization:</strong> {{ doctor.get_specialization_display }}</p>
+                                    <p class="mb-1"><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+                                    <p class="mb-0"><strong>License:</strong> {{ doctor.license_number }}</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="consultation-fee">
+                                        <span class="text-muted">Consultation Fee</span>
+                                        <h4 class="text-success">₹{{ doctor.consultation_fee }}</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if doctor.bio %}
+                                <hr>
+                                <p class="text-muted mb-0">{{ doctor.bio }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Form -->
+                <form method="post" id="booking-form">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="appointment_date" class="form-label">Appointment Date *</label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="appointment_date" 
+                                   name="appointment_date" 
+                                   min="{{ today|date:'Y-m-d' }}" 
+                                   required>
+                            <div class="form-text">Select a future date for your appointment</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Available Time Slots *</label>
+                            <div id="time-slots-container">
+                                <div class="text-muted">Please select a date first to view available time slots</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Slots -->
+                    <div class="mb-3" id="time-slots-section" style="display: none;">
+                        <label class="form-label">Select Time Slot *</label>
+                        <div class="row">
+                            {% for slot in time_slots %}
+                                <div class="col-md-3 col-sm-4 col-6 mb-2">
+                                    <div class="time-slot">
+                                        <input type="radio" 
+                                               id="slot_{{ slot.id }}" 
+                                               name="appointment_time" 
+                                               value="{{ slot.id }}" 
+                                               required>
+                                        <label for="slot_{{ slot.id }}">{{ slot.get_time_display }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Symptoms -->
+                    <div class="mb-3">
+                        <label for="symptoms" class="form-label">Symptoms / Reason for Visit</label>
+                        <textarea class="form-control" 
+                                  id="symptoms" 
+                                  name="symptoms" 
+                                  rows="4" 
+                                  placeholder="Please describe your symptoms or reason for consultation (optional)"></textarea>
+                        <div class="form-text">This information helps the doctor prepare for your consultation</div>
+                    </div>
+                    
+                    <!-- Appointment Summary -->
+                    <div class="card bg-light mb-3" id="appointment-summary" style="display: none;">
+                        <div class="card-body">
+                            <h6><i class="fas fa-clipboard-list"></i> Appointment Summary</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Doctor:</strong> Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</p>
+                                    <p class="mb-1"><strong>Specialization:</strong> {{ doctor.get_specialization_display }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Date:</strong> <span id="selected-date">-</span></p>
+                                    <p class="mb-1"><strong>Time:</strong> <span id="selected-time">-</span></p>
+                                    <p class="mb-0"><strong>Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Terms -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="booking-terms" required>
+                            <label class="form-check-label" for="booking-terms">
+                                I understand the appointment booking terms and cancellation policy *
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg" id="book-btn" disabled>
+                            <i class="fas fa-calendar-check"></i> Confirm Appointment
+                        </button>
+                        <a href="{% url 'appointments:doctor_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Doctors
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Booking Guidelines -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6><i class="fas fa-info-circle text-primary"></i> Booking Guidelines</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success"></i> Appointments can be booked up to 30 days in advance</li>
+                            <li><i class="fas fa-check text-success"></i> Cancellation allowed up to 2 hours before appointment</li>
+                            <li><i class="fas fa-check text-success"></i> Please arrive 10 minutes early</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success"></i> Bring valid ID and medical history if available</li>
+                            <li><i class="fas fa-check text-success"></i> Consultation fee is payable at the clinic</li>
+                            <li><i class="fas fa-check text-success"></i> Reschedule option available in your dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('appointment_date');
+    const timeSlotsSection = document.getElementById('time-slots-section');
+    const appointmentSummary = document.getElementById('appointment-summary');
+    const bookBtn = document.getElementById('book-btn');
+    const bookingTerms = document.getElementById('booking-terms');
+    
+    // Set minimum date to today
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.min = tomorrow.toISOString().split('T')[0];
+    
+    // Show time slots when date is selected
+    dateInput.addEventListener('change', function() {
+        if (this.value) {
+            timeSlotsSection.style.display = 'block';
+            updateSummary();
+        } else {
+            timeSlotsSection.style.display = 'none';
+            appointmentSummary.style.display = 'none';
+        }
+        checkFormValidity();
+    });
+    
+    // Handle time slot selection
+    document.querySelectorAll('input[name="appointment_time"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            updateSummary();
+            checkFormValidity();
+        });
+    });
+    
+    // Handle terms checkbox
+    bookingTerms.addEventListener('change', checkFormValidity);
+    
+    function updateSummary() {
+        const selectedDate = dateInput.value;
+        const selectedTimeRadio = document.querySelector('input[name="appointment_time"]:checked');
+        
+        if (selectedDate && selectedTimeRadio) {
+            const selectedTimeLabel = document.querySelector(`label[for="${selectedTimeRadio.id}"]`).textContent;
+            
+            document.getElementById('selected-date').textContent = new Date(selectedDate).toLocaleDateString();
+            document.getElementById('selected-time').textContent = selectedTimeLabel;
+            
+            appointmentSummary.style.display = 'block';
+        }
+    }
+    
+    function checkFormValidity() {
+        const dateSelected = dateInput.value;
+        const timeSelected = document.querySelector('input[name="appointment_time"]:checked');
+        const termsAccepted = bookingTerms.checked;
+        
+        bookBtn.disabled = !(dateSelected && timeSelected && termsAccepted);
+    }
+    
+    // Form submission
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+        if (!bookingTerms.checked) {
+            e.preventDefault();
+            alert('Please accept the booking terms to continue.');
+            return false;
+        }
+        
+        // Show loading state
+        bookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+        bookBtn.disabled = true;
+    });
+});
+</script>
+
+<style>
+.time-slot input[type="radio"] {
+    display: none;
+}
+
+.time-slot label {
+    display: block;
+    padding: 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.time-slot label:hover {
+    border-color: #007bff;
+    background: #f8f9fa;
+}
+
+.time-slot input[type="radio"]:checked + label {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.consultation-fee {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+</style>
+{% endblock %}

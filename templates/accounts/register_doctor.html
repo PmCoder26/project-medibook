@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Registration - MediBook{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-user-md"></i> Doctor Registration</h3>
+                <p class="text-muted">Join our network of qualified medical professionals</p>
+            </div>
+            <div class="card-body">
+                <form method="post" id="doctor-register-form">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name *</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name *</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username *</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">This will be your login username</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">10-digit mobile number</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.specialization.id_for_label }}" class="form-label">Medical Specialization *</label>
+                            {{ form.specialization }}
+                            {% if form.specialization.errors %}
+                                <div class="text-danger">{{ form.specialization.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.license_number.id_for_label }}" class="form-label">Medical License Number *</label>
+                            {{ form.license_number }}
+                            {% if form.license_number.errors %}
+                                <div class="text-danger">{{ form.license_number.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Your valid medical practice license</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.experience_years.id_for_label }}" class="form-label">Years of Experience *</label>
+                            {{ form.experience_years }}
+                            {% if form.experience_years.errors %}
+                                <div class="text-danger">{{ form.experience_years.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Total years of medical practice</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.consultation_fee.id_for_label }}" class="form-label">Consultation Fee (₹) *</label>
+                        {{ form.consultation_fee }}
+                        {% if form.consultation_fee.errors %}
+                            <div class="text-danger">{{ form.consultation_fee.errors.0 }}</div>
+                        {% endif %}
+                        <div class="form-text">Your consultation fee per appointment</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">Password *</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">
+                                <small>
+                                    • At least 8 characters<br>
+                                    • Include uppercase, lowercase, number & special character
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password *</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" target="_blank">Terms of Service</a> and 
+                                <a href="#" target="_blank">Privacy Policy</a> *
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="medical_verification">
+                            <label class="form-check-label" for="medical_verification">
+                                I certify that all medical credentials provided are valid and up-to-date
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-md"></i> Register as Doctor
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+                    <p><a href="{% url 'accounts:register_choice' %}">← Back to registration options</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Information Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5><i class="fas fa-info-circle text-primary"></i> Doctor Registration Benefits</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Manage your practice online</li>
+                            <li><i class="fas fa-check text-success"></i> Set your own consultation fees</li>
+                            <li><i class="fas fa-check text-success"></i> Flexible scheduling system</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Connect with patients easily</li>
+                            <li><i class="fas fa-check text-success"></i> Track appointment history</li>
+                            <li><i class="fas fa-check text-success"></i> Professional dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Verification Process:</strong> All doctor registrations are subject to credential verification. 
+                    You will be notified once your account is approved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('doctor-register-form').addEventListener('submit', function(e) {
+    const terms = document.getElementById('terms');
+    if (!terms.checked) {
+        e.preventDefault();
+        alert('Please accept the Terms of Service and Privacy Policy to continue.');
+        return false;
+    }
+});
+</script>
+{% endblock %}

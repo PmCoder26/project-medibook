@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - MediBook{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="text-center mb-5">
+            <h2><i class="fas fa-user-plus"></i> Choose Registration Type</h2>
+            <p class="lead">Select how you want to register with MediBook</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user fa-4x text-primary mb-3"></i>
+                        <h4 class="card-title">Patient</h4>
+                        <p class="card-text">Register as a patient to book appointments with doctors and manage your healthcare.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success"></i> Book appointments</li>
+                            <li><i class="fas fa-check text-success"></i> View appointment history</li>
+                            <li><i class="fas fa-check text-success"></i> Search doctors</li>
+                            <li><i class="fas fa-check text-success"></i> Manage profile</li>
+                        </ul>
+                        <a href="{% url 'accounts:register_patient' %}" class="btn btn-primary btn-lg">
+                            Register as Patient
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user-md fa-4x text-success mb-3"></i>
+                        <h4 class="card-title">Doctor</h4>
+                        <p class="card-text">Register as a doctor to manage your practice and connect with patients online.</p>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-check text-success"></i> Manage appointments</li>
+                            <li><i class="fas fa-check text-success"></i> Set availability</li>
+                            <li><i class="fas fa-check text-success"></i> View patient details</li>
+                            <li><i class="fas fa-check text-success"></i> Track consultations</li>
+                        </ul>
+                        <a href="{% url 'accounts:register_doctor' %}" class="btn btn-success btn-lg">
+                            Register as Doctor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <p>Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

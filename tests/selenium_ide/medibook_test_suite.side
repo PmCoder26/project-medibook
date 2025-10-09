@@ -1,0 +1,449 @@
+{
+  "id": "medibook-test-suite",
+  "version": "2.0",
+  "name": "MediBook Test Suite",
+  "url": "http://127.0.0.1:8000",
+  "tests": [
+    {
+      "id": "patient-registration-test",
+      "name": "Patient Registration Test",
+      "commands": [
+        {
+          "id": "1",
+          "comment": "Navigate to home page",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2",
+          "comment": "Click Register link",
+          "command": "click",
+          "target": "linkText=Register",
+          "targets": [
+            ["linkText=Register", "linkText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3",
+          "comment": "Click Register as Patient",
+          "command": "click",
+          "target": "linkText=Register as Patient",
+          "targets": [
+            ["linkText=Register as Patient", "linkText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4",
+          "comment": "Enter first name",
+          "command": "type",
+          "target": "id=id_first_name",
+          "targets": [
+            ["id=id_first_name", "id"]
+          ],
+          "value": "Test"
+        },
+        {
+          "id": "5",
+          "comment": "Enter last name",
+          "command": "type",
+          "target": "id=id_last_name",
+          "targets": [
+            ["id=id_last_name", "id"]
+          ],
+          "value": "Patient"
+        },
+        {
+          "id": "6",
+          "comment": "Enter username",
+          "command": "type",
+          "target": "id=id_username",
+          "targets": [
+            ["id=id_username", "id"]
+          ],
+          "value": "testpatient_ide"
+        },
+        {
+          "id": "7",
+          "comment": "Enter email",
+          "command": "type",
+          "target": "id=id_email",
+          "targets": [
+            ["id=id_email", "id"]
+          ],
+          "value": "testpatient@ide.com"
+        },
+        {
+          "id": "8",
+          "comment": "Enter phone",
+          "command": "type",
+          "target": "id=id_phone",
+          "targets": [
+            ["id=id_phone", "id"]
+          ],
+          "value": "9876543299"
+        },
+        {
+          "id": "9",
+          "comment": "Enter date of birth",
+          "command": "type",
+          "target": "id=id_date_of_birth",
+          "targets": [
+            ["id=id_date_of_birth", "id"]
+          ],
+          "value": "1990-01-01"
+        },
+        {
+          "id": "10",
+          "comment": "Select gender",
+          "command": "select",
+          "target": "id=id_gender",
+          "targets": [
+            ["id=id_gender", "id"]
+          ],
+          "value": "M"
+        },
+        {
+          "id": "11",
+          "comment": "Enter address",
+          "command": "type",
+          "target": "id=id_address",
+          "targets": [
+            ["id=id_address", "id"]
+          ],
+          "value": "123 IDE Test Street"
+        },
+        {
+          "id": "12",
+          "comment": "Enter password",
+          "command": "type",
+          "target": "id=id_password1",
+          "targets": [
+            ["id=id_password1", "id"]
+          ],
+          "value": "TestPass123!"
+        },
+        {
+          "id": "13",
+          "comment": "Confirm password",
+          "command": "type",
+          "target": "id=id_password2",
+          "targets": [
+            ["id=id_password2", "id"]
+          ],
+          "value": "TestPass123!"
+        },
+        {
+          "id": "14",
+          "comment": "Submit registration form",
+          "command": "click",
+          "target": "css=button[type='submit']",
+          "targets": [
+            ["css=button[type='submit']", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "15",
+          "comment": "Verify success or redirect",
+          "command": "waitForElementPresent",
+          "target": "css=.alert-success, #id_username",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "login-test",
+      "name": "Login Test",
+      "commands": [
+        {
+          "id": "1",
+          "comment": "Navigate to login page",
+          "command": "open",
+          "target": "/accounts/login/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2",
+          "comment": "Enter username",
+          "command": "type",
+          "target": "id=id_username",
+          "targets": [
+            ["id=id_username", "id"]
+          ],
+          "value": "patient1"
+        },
+        {
+          "id": "3",
+          "comment": "Enter password",
+          "command": "type",
+          "target": "id=id_password",
+          "targets": [
+            ["id=id_password", "id"]
+          ],
+          "value": "patient123"
+        },
+        {
+          "id": "4",
+          "comment": "Click login button",
+          "command": "click",
+          "target": "css=button[type='submit']",
+          "targets": [
+            ["css=button[type='submit']", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5",
+          "comment": "Verify login success",
+          "command": "waitForElementPresent",
+          "target": "id=navbarDropdown",
+          "targets": [
+            ["id=navbarDropdown", "id"]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "6",
+          "comment": "Verify user name in dropdown",
+          "command": "assertText",
+          "target": "id=navbarDropdown",
+          "targets": [
+            ["id=navbarDropdown", "id"]
+          ],
+          "value": "*Alice*"
+        }
+      ]
+    },
+    {
+      "id": "doctor-search-test",
+      "name": "Doctor Search Test",
+      "commands": [
+        {
+          "id": "1",
+          "comment": "Navigate to doctor list",
+          "command": "open",
+          "target": "/appointments/doctors/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2",
+          "comment": "Verify doctors are displayed",
+          "command": "waitForElementPresent",
+          "target": "css=.doctor-card",
+          "targets": [
+            ["css=.doctor-card", "css:finder"]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "3",
+          "comment": "Select specialization filter",
+          "command": "select",
+          "target": "id=specialization",
+          "targets": [
+            ["id=specialization", "id"]
+          ],
+          "value": "cardiology"
+        },
+        {
+          "id": "4",
+          "comment": "Click filter button",
+          "command": "click",
+          "target": "css=button[type='submit']",
+          "targets": [
+            ["css=button[type='submit']", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5",
+          "comment": "Verify filtered results",
+          "command": "waitForElementPresent",
+          "target": "css=.specialization-badge",
+          "targets": [
+            ["css=.specialization-badge", "css:finder"]
+          ],
+          "value": "3000"
+        }
+      ]
+    },
+    {
+      "id": "appointment-booking-test",
+      "name": "Appointment Booking Test",
+      "commands": [
+        {
+          "id": "1",
+          "comment": "Login first",
+          "command": "open",
+          "target": "/accounts/login/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2",
+          "command": "type",
+          "target": "id=id_username",
+          "targets": [
+            ["id=id_username", "id"]
+          ],
+          "value": "patient1"
+        },
+        {
+          "id": "3",
+          "command": "type",
+          "target": "id=id_password",
+          "targets": [
+            ["id=id_password", "id"]
+          ],
+          "value": "patient123"
+        },
+        {
+          "id": "4",
+          "command": "click",
+          "target": "css=button[type='submit']",
+          "targets": [
+            ["css=button[type='submit']", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5",
+          "comment": "Navigate to doctors",
+          "command": "open",
+          "target": "/appointments/doctors/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6",
+          "comment": "Click book appointment",
+          "command": "click",
+          "target": "linkText=Book Appointment",
+          "targets": [
+            ["linkText=Book Appointment", "linkText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7",
+          "comment": "Select appointment date",
+          "command": "type",
+          "target": "name=appointment_date",
+          "targets": [
+            ["name=appointment_date", "name"]
+          ],
+          "value": "2025-10-15"
+        },
+        {
+          "id": "8",
+          "comment": "Select time slot",
+          "command": "click",
+          "target": "css=input[name='appointment_time']:first-of-type",
+          "targets": [
+            ["css=input[name='appointment_time']:first-of-type", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "9",
+          "comment": "Enter symptoms",
+          "command": "type",
+          "target": "name=symptoms",
+          "targets": [
+            ["name=symptoms", "name"]
+          ],
+          "value": "Regular checkup"
+        },
+        {
+          "id": "10",
+          "comment": "Submit booking",
+          "command": "click",
+          "target": "css=button[type='submit']",
+          "targets": [
+            ["css=button[type='submit']", "css:finder"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "11",
+          "comment": "Verify booking success",
+          "command": "waitForElementPresent",
+          "target": "css=.alert-success, [href*='dashboard']",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "logout-test",
+      "name": "Logout Test",
+      "commands": [
+        {
+          "id": "1",
+          "comment": "Assume user is logged in",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2",
+          "comment": "Click user dropdown",
+          "command": "click",
+          "target": "id=navbarDropdown",
+          "targets": [
+            ["id=navbarDropdown", "id"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3",
+          "comment": "Click logout",
+          "command": "click",
+          "target": "linkText=Logout",
+          "targets": [
+            ["linkText=Logout", "linkText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4",
+          "comment": "Verify logout success",
+          "command": "waitForElementPresent",
+          "target": "linkText=Login",
+          "targets": [
+            ["linkText=Login", "linkText"]
+          ],
+          "value": "5000"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "complete-user-flow",
+      "name": "Complete User Flow",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "patient-registration-test",
+        "login-test",
+        "doctor-search-test",
+        "appointment-booking-test",
+        "logout-test"
+      ]
+    }
+  ],
+  "urls": [
+    "http://127.0.0.1:8000"
+  ],
+  "plugins": []
+}

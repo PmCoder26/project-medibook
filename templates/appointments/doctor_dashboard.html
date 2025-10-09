@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard - MediBook{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-stethoscope"></i> Doctor Dashboard</h2>
+            <div>
+                <span class="badge bg-success">Available</span>
+                <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary ms-2">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Welcome Card -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-user-md"></i> Welcome, Dr. {{ user.first_name }}!
+                </h5>
+                <p class="card-text">
+                    {{ user.doctor.get_specialization_display }} • {{ user.doctor.experience_years }} years experience
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-day fa-2x mb-2"></i>
+                <h3 class="stats-number">{{ today_count }}</h3>
+                <p class="mb-0">Today's Appointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-week fa-2x mb-2"></i>
+                <h3 class="stats-number">{{ upcoming_count }}</h3>
+                <p class="mb-0">Upcoming Appointments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h3 class="stats-number">{{ total_patients }}</h3>
+                <p class="mb-0">Total Patients</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card">
+            <div class="card-body text-center">
+                <i class="fas fa-rupee-sign fa-2x mb-2"></i>
+                <h3 class="stats-number">{{ user.doctor.consultation_fee }}</h3>
+                <p class="mb-0">Consultation Fee</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Appointments -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-calendar-day"></i> Today's Appointments</h5>
+                <span class="badge bg-primary">{{ today_appointments|length }} appointments</span>
+            </div>
+            <div class="card-body">
+                {% if today_appointments %}
+                    {% for appointment in today_appointments %}
+                        <div class="appointment-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <strong>{{ appointment.appointment_time.get_time_display }}</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</strong><br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-phone"></i> {{ appointment.patient.user.phone }}
+                                    </small>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge status-{{ appointment.status }}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        {% if appointment.status == 'pending' %}
+                                            <button class="btn btn-outline-success btn-sm" 
+                                                    onclick="updateStatus('{{ appointment.id }}', 'confirmed')">
+                                                <i class="fas fa-check"></i> Confirm
+                                            </button>
+                                        {% endif %}
+                                        {% if appointment.status == 'confirmed' %}
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                    onclick="updateStatus('{{ appointment.id }}', 'completed')">
+                                                <i class="fas fa-check-double"></i> Complete
+                                            </button>
+                                        {% endif %}
+                                        <a href="{% url 'appointments:cancel_appointment' appointment.id %}" 
+                                           class="btn btn-outline-danger btn-sm"
+                                           onclick="return confirm('Cancel this appointment?')">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if appointment.symptoms %}
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <small class="text-muted">
+                                            <strong>Symptoms:</strong> {{ appointment.symptoms }}
+                                        </small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% if not forloop.last %}<hr>{% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Appointments Today</h5>
+                        <p class="text-muted">You have a free day! Enjoy your time.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Doctor Information & Quick Actions -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user-md"></i> Doctor Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <i class="fas fa-user-circle fa-4x text-primary"></i>
+                    <h6 class="mt-2">Dr. {{ user.first_name }} {{ user.last_name }}</h6>
+                    <p class="text-muted">{{ user.doctor.get_specialization_display }}</p>
+                </div>
+                
+                <hr>
+                
+                <div class="row text-center">
+                    <div class="col-6">
+                        <strong>{{ user.doctor.experience_years }}</strong><br>
+                        <small class="text-muted">Years Experience</small>
+                    </div>
+                    <div class="col-6">
+                        <strong>₹{{ user.doctor.consultation_fee }}</strong><br>
+                        <small class="text-muted">Consultation Fee</small>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-edit"></i> Update Profile
+                    </a>
+                    <button class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-calendar-alt"></i> Manage Schedule
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6><i class="fas fa-chart-bar"></i> Quick Stats</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-12 mb-2">
+                        <strong>This Week</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="badge bg-success">12</span><br>
+                        <small>Completed</small>
+                    </div>
+                    <div class="col-6">
+                        <span class="badge bg-warning">3</span><br>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Appointments -->
+{% if upcoming_appointments %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-calendar-alt"></i> Upcoming Appointments</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Patient</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in upcoming_appointments %}
+                                <tr>
+                                    <td>{{ appointment.appointment_date }}</td>
+                                    <td>{{ appointment.appointment_time.get_time_display }}</td>
+                                    <td>{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</td>
+                                    <td>{{ appointment.patient.user.phone }}</td>
+                                    <td>
+                                        <span class="badge status-{{ appointment.status }}">
+                                            {{ appointment.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if appointment.status == 'pending' %}
+                                                <button class="btn btn-outline-success btn-sm">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            {% endif %}
+                                            <a href="{% url 'appointments:cancel_appointment' appointment.id %}" 
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function updateStatus(appointmentId, status) {
+    // This would typically make an AJAX call to update appointment status
+    alert('Status update functionality would be implemented here');
+}
+</script>
+{% endblock %}

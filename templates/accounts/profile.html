@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - MediBook{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <!-- Profile Card -->
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
+                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                <p class="text-muted">{{ user.get_user_type_display }}</p>
+                {% if user.user_type == 'doctor' %}
+                    <span class="badge bg-success">{{ user.doctor.get_specialization_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6><i class="fas fa-bolt"></i> Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    {% if user.user_type == 'patient' %}
+                        <a href="{% url 'appointments:doctor_list' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-calendar-plus"></i> Book Appointment
+                        </a>
+                        <a href="{% url 'appointments:patient_dashboard' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'appointments:doctor_dashboard' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-calendar-alt"></i> Manage Schedule
+                        </button>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary btn-sm" onclick="enableEdit()">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <!-- Basic Information -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user"></i> Basic Information</h5>
+            </div>
+            <div class="card-body">
+                <form id="profile-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" value="{{ user.phone }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">User Type</label>
+                            <input type="text" class="form-control" value="{{ user.get_user_type_display }}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="date_of_birth" class="form-control" value="{{ user.date_of_birth|date:'Y-m-d' }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Member Since</label>
+                            <input type="text" class="form-control" value="{{ user.date_joined|date:'F Y' }}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" class="form-control" rows="3" readonly>{{ user.address }}</textarea>
+                    </div>
+                    
+                    <div class="d-none" id="edit-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Professional Information (for doctors) -->
+        {% if user.user_type == 'doctor' %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-stethoscope"></i> Professional Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Specialization</label>
+                        <input type="text" class="form-control" value="{{ user.doctor.get_specialization_display }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">License Number</label>
+                        <input type="text" class="form-control" value="{{ user.doctor.license_number }}" readonly>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Years of Experience</label>
+                        <input type="number" class="form-control" value="{{ user.doctor.experience_years }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Consultation Fee (₹)</label>
+                        <input type="number" class="form-control" value="{{ user.doctor.consultation_fee }}" readonly>
+                    </div>
+                </div>
+                
+                {% if user.doctor.bio %}
+                <div class="mb-3">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-control" rows="4" readonly>{{ user.doctor.bio }}</textarea>
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Availability Status</label>
+                        <div class="form-control-plaintext">
+                            {% if user.doctor.is_available %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-danger">Not Available</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Patient Information -->
+        {% if user.user_type == 'patient' %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-notes-medical"></i> Medical Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% if user.patient.gender %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Gender</label>
+                        <input type="text" class="form-control" value="{{ user.patient.get_gender_display }}" readonly>
+                    </div>
+                    {% endif %}
+                    {% if user.patient.blood_group %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Blood Group</label>
+                        <input type="text" class="form-control" value="{{ user.patient.blood_group }}" readonly>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if user.patient.emergency_contact %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Emergency Contact</label>
+                        <input type="text" class="form-control" value="{{ user.patient.emergency_contact }}" readonly>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user.patient.medical_history %}
+                <div class="mb-3">
+                    <label class="form-label">Medical History</label>
+                    <textarea class="form-control" rows="4" readonly>{{ user.patient.medical_history }}</textarea>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Account Security -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-shield-alt"></i> Account Security</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Last Login</label>
+                        <input type="text" class="form-control" value="{{ user.last_login|date:'M d, Y H:i' }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Account Status</label>
+                        <div class="form-control-plaintext">
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex">
+                    <button class="btn btn-outline-warning" onclick="changePassword()">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deactivateAccount()">
+                        <i class="fas fa-user-times"></i> Deactivate Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function enableEdit() {
+    // Enable form fields for editing
+    const form = document.getElementById('profile-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    const editButtons = document.getElementById('edit-buttons');
+    
+    inputs.forEach(input => {
+        if (input.type !== 'text' || input.value !== '{{ user.username }}') {
+            input.removeAttribute('readonly');
+        }
+    });
+    
+    editButtons.classList.remove('d-none');
+    
+    // Show notification
+    showNotification('Edit mode enabled. Make your changes and click Save.', 'info');
+}
+
+function cancelEdit() {
+    // Reload page to cancel changes
+    location.reload();
+}
+
+function changePassword() {
+    alert('Password change functionality would redirect to a secure password change form.');
+}
+
+function deactivateAccount() {
+    if (confirm('Are you sure you want to deactivate your account? This action cannot be undone.')) {
+        alert('Account deactivation functionality would be implemented here.');
+    }
+}
+
+function showNotification(message, type) {
+    // Simple notification system
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+// Form submission
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    // Don't prevent default - let it submit normally
+    showNotification('Saving profile changes...', 'info');
+});
+</script>
+{% endblock %}
