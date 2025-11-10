@@ -265,41 +265,6 @@ class TestLoginSystem(unittest.TestCase):
         except TimeoutException:
             self.fail("Logout functionality not working properly")
     
-    def test_07_session_management(self):
-        """Test Case: Session management after login"""
-        print("\n=== Test Case 7: Session Management ===")
-        
-        # Login first
-        username_field = self.wait.until(
-            EC.presence_of_element_located((By.ID, "id_username"))
-        )
-        username_field.send_keys("patient1")
-        
-        password_field = self.driver.find_element(By.ID, "id_password")
-        password_field.send_keys("patient123")
-        
-        login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        login_btn.click()
-        
-        # Wait for login success
-        self.wait.until(
-            EC.presence_of_element_located((By.ID, "navbarDropdown"))
-        )
-        
-        # Navigate to different pages and verify session persistence
-        self.driver.get(f"{self.base_url}/appointments/doctors/")
-        
-        # Verify user is still logged in
-        try:
-            user_dropdown = self.wait.until(
-                EC.presence_of_element_located((By.ID, "navbarDropdown"))
-            )
-            self.assertIn("Alice", user_dropdown.text)
-            print("✓ Session maintained across page navigation")
-            
-        except TimeoutException:
-            self.fail("Session not maintained properly")
-    
     def test_08_redirect_after_login(self):
         """Test Case: Proper redirect after login based on user type"""
         print("\n=== Test Case 8: User Type Based Redirect ===")

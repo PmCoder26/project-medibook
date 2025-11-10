@@ -1,0 +1,251 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration - MediBook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-stethoscope"></i> MediBook
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/appointments/doctors/">Find Doctors</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="/accounts/login/">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/accounts/register/">Register</a>
+                        </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-user-md"></i> Doctor Registration</h3>
+                <p class="text-muted">Join our network of qualified medical professionals</p>
+            </div>
+            <div class="card-body">
+                <form method="post" id="doctor-register-form">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name" class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="First Name" maxlength="30" required="" id="id_first_name">
+                            
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name" class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Last Name" maxlength="30" required="" id="id_last_name">
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_username" class="form-label">Username *</label>
+                            <input type="text" name="username" maxlength="150" autofocus="" class="form-control" placeholder="Username" required="" id="id_username">
+                            
+                            <div class="form-text">This will be your login username</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_email" class="form-label">Email Address *</label>
+                            <input type="email" name="email" class="form-control" placeholder="Email" maxlength="320" required="" id="id_email">
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_phone" class="form-label">Phone Number *</label>
+                            <input type="text" name="phone" class="form-control" placeholder="10-digit phone number" maxlength="10" required="" id="id_phone">
+                            
+                            <div class="form-text">10-digit mobile number</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_specialization" class="form-label">Medical Specialization *</label>
+                            <select name="specialization" class="form-control" id="id_specialization">
+  <option value="general">General Medicine</option>
+
+  <option value="cardiology">Cardiology</option>
+
+  <option value="dermatology">Dermatology</option>
+
+  <option value="orthopedics">Orthopedics</option>
+
+  <option value="pediatrics">Pediatrics</option>
+
+  <option value="gynecology">Gynecology</option>
+
+  <option value="neurology">Neurology</option>
+
+  <option value="psychiatry">Psychiatry</option>
+
+</select>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_license_number" class="form-label">Medical License Number *</label>
+                            <input type="text" name="license_number" class="form-control" placeholder="Medical License Number" maxlength="50" required="" id="id_license_number">
+                            
+                            <div class="form-text">Your valid medical practice license</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_experience_years" class="form-label">Years of Experience *</label>
+                            <input type="number" name="experience_years" class="form-control" placeholder="Years of Experience" min="0" max="50" required="" id="id_experience_years">
+                            
+                            <div class="form-text">Total years of medical practice</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_consultation_fee" class="form-label">Consultation Fee (₹) *</label>
+                        <input type="number" name="consultation_fee" class="form-control" placeholder="Consultation Fee" step="0.01" required="" id="id_consultation_fee">
+                        
+                        <div class="form-text">Your consultation fee per appointment</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_password1" class="form-label">Password *</label>
+                            <input type="password" name="password1" autocomplete="new-password" class="form-control" placeholder="Password" required="" id="id_password1">
+                            
+                            <div class="form-text">
+                                <small>
+                                    • At least 8 characters<br>
+                                    • Include uppercase, lowercase, number &amp; special character
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_password2" class="form-label">Confirm Password *</label>
+                            <input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Confirm Password" required="" id="id_password2">
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Terms and Conditions -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required="">
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" target="_blank">Terms of Service</a> and 
+                                <a href="#" target="_blank">Privacy Policy</a> *
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="medical_verification">
+                            <label class="form-check-label" for="medical_verification">
+                                I certify that all medical credentials provided are valid and up-to-date
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-md"></i> Register as Doctor
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p>Already have an account? <a href="/accounts/login/">Login here</a></p>
+                    <p><a href="/accounts/register/">← Back to registration options</a></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Information Card -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5><i class="fas fa-info-circle text-primary"></i> Doctor Registration Benefits</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Manage your practice online</li>
+                            <li><i class="fas fa-check text-success"></i> Set your own consultation fees</li>
+                            <li><i class="fas fa-check text-success"></i> Flexible scheduling system</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Connect with patients easily</li>
+                            <li><i class="fas fa-check text-success"></i> Track appointment history</li>
+                            <li><i class="fas fa-check text-success"></i> Professional dashboard</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Verification Process:</strong> All doctor registrations are subject to credential verification. 
+                    You will be notified once your account is approved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('doctor-register-form').addEventListener('submit', function(e) {
+    const terms = document.getElementById('terms');
+    if (!terms.checked) {
+        e.preventDefault();
+        alert('Please accept the Terms of Service and Privacy Policy to continue.');
+        return false;
+    }
+});
+</script>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container text-center">
+            <p>© 2025 MediBook. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+
+
+</body></html>
