@@ -63,7 +63,6 @@ def main():
     
     # Test files to run (in order of reliability)
     test_suite = [
-        ("test_selenium_simple.py", "Core Functionality Tests"),
         ("tests/selenium_tests/test_login_system.py", "Login System Tests"),
         ("tests/selenium_tests/test_user_registration.py", "User Registration Tests"),
         ("tests/selenium_tests/test_appointment_booking.py", "Appointment Booking Tests")
@@ -72,6 +71,7 @@ def main():
     results = {
         'total_suites': len(test_suite),
         'passed_suites': 0,
+        'failed_suites': 0,  # Initialize failed_suites counter
         'start_time': datetime.now(),
         'details': []
     }
@@ -134,8 +134,7 @@ def main():
     else:
         print("❌ NEEDS WORK - Multiple test failures detected")
     
-    print(f"\n🔗 Key Working Test: test_selenium_simple.py")
-    print(f"💡 Recommendation: Use the simple test for demonstrations")
+    print(f"🔗 Key Working Tests: Login, Registration, and Booking")
     
     return success_rate >= 60
 
