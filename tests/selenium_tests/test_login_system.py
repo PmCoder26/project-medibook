@@ -19,13 +19,15 @@ class TestLoginSystem(unittest.TestCase):
     def setUpClass(cls):
         """Set up the WebDriver before running tests"""
         try:
-            # Use Chrome with optimized settings
+            # Use Chrome with visible browser for debugging
             options = webdriver.ChromeOptions()
-            options.add_argument('--headless')
+            # Comment out headless to see the browser
+            # options.add_argument('--headless')
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--disable-gpu')
             options.add_argument('--window-size=1920,1080')
+            options.add_argument('--start-maximized')
             
             # Try Chrome without WebDriverManager first
             try:
@@ -50,25 +52,82 @@ class TestLoginSystem(unittest.TestCase):
     
     def setUp(self):
         """Navigate to login page before each test"""
+        print(f"\nNavigating to: {self.base_url}/accounts/login/")
         self.driver.get(f"{self.base_url}/accounts/login/")
-        time.sleep(1)
+        
+        # Print current URL and page title for debugging
+        print(f"Current URL: {self.driver.current_url}")
+        print(f"Page title: {self.driver.title}")
+        
+        # Save screenshot and page source for debugging
+        self.driver.save_screenshot('login_page.png')
+        with open('login_page_source.html', 'w', encoding='utf-8') as f:
+            f.write(self.driver.page_source)
+        
+        time.sleep(2)  # Give it a bit more time to load
     
     def test_01_valid_patient_login(self):
         """Test Case: Valid patient login"""
         print("\n=== Test Case 1: Valid Patient Login ===")
         
+        # Debug: Print all input fields on the page
+        inputs = self.driver.find_elements(By.TAG_NAME, 'input')
+        print(f"Found {len(inputs)} input fields on the page")
+        for i, input_elem in enumerate(inputs, 1):
+            print(f"  {i}. id='{input_elem.get_attribute('id')}', name='{input_elem.get_attribute('name')}', type='{input_elem.get_attribute('type')}'")
+        
         # Enter valid patient credentials
-        username_field = self.wait.until(
-            EC.presence_of_element_located((By.ID, "id_username"))
-        )
-        username_field.send_keys("patient1")
-        
-        password_field = self.driver.find_element(By.ID, "id_password")
-        password_field.send_keys("patient123")
-        
-        # Submit login form
-        login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        login_btn.click()
+        try:
+            username_field = self.wait.until(
+                EC.presence_of_element_located((By.ID, "id_username")),
+                message="Username field not found"
+            )
+            print("Found username field")
+            username_field.send_keys("patient1")
+            print("Entered username")
+            
+            password_field = self.driver.find_element(By.ID, "id_password")
+            password_field.send_keys("patient123")
+            print("Entered password")
+            
+            # Debug: Print all buttons on the page
+            buttons = self.driver.find_elements(By.TAG_NAME, 'button')
+            print(f"Found {len(buttons)} buttons on the page")
+            for i, btn in enumerate(buttons, 1):
+                print(f"  {i}. type='{btn.get_attribute('type')}', text='{btn.text}'")
+            
+            # Submit login form
+            login_btn = self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+            print("Found login button")
+            
+            # Scroll to the button and highlight it
+            self.driver.execute_script("arguments[0].style.border='3px solid red';", login_btn)
+            time.sleep(1)
+            
+            # Take a screenshot before clicking
+            self.driver.save_screenshot('before_login_click.png')
+            
+            # Click using JavaScript
+            self.driver.execute_script("arguments[0].click();", login_btn)
+            print("Clicked login button")
+            
+            # Wait for navigation
+            time.sleep(2)
+            
+            # Take a screenshot after clicking
+            self.driver.save_screenshot('after_login_click.png')
+            print(f"After login - URL: {self.driver.current_url}")
+            print(f"Page source saved to 'after_login.html'")
+            with open('after_login.html', 'w', encoding='utf-8') as f:
+                f.write(self.driver.page_source)
+                
+        except Exception as e:
+            print(f"Error during login: {str(e)}")
+            # Save the page source for debugging
+            with open('error_page.html', 'w', encoding='utf-8') as f:
+                f.write(self.driver.page_source)
+            self.driver.save_screenshot('error_screenshot.png')
+            raise
         
         # Verify successful login and redirect to patient dashboard
         try:
