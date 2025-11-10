@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime, timedelta
-from .models import Appointment, Doctor, TimeSlot, DoctorAvailability
+from .models import Appointment, Doctor, TimeSlot, DoctorAvailability, AppointmentHistory
 from accounts.models import Patient
 
 
@@ -134,33 +134,80 @@ def book_appointment(request, doctor_id):
         appointment_time_id = request.POST.get('appointment_time')
         symptoms = request.POST.get('symptoms', '')
         
+        # Validate and parse the date
         try:
             appointment_date = datetime.strptime(appointment_date, '%Y-%m-%d').date()
-            appointment_time = get_object_or_404(TimeSlot, id=appointment_time_id)
+            if appointment_date < timezone.now().date():
+                messages.error(request, 'Cannot book appointments in the past.')
+                return redirect('appointments:book_appointment', doctor_id=doctor_id)
+                
+        except ValueError:
+            messages.error(request, 'Invalid date format. Please use YYYY-MM-DD format.')
+            return redirect('appointments:book_appointment', doctor_id=doctor_id)
+        
+        # Get the time slot
+        try:
+            appointment_time = TimeSlot.objects.get(id=appointment_time_id)
+        except TimeSlot.DoesNotExist:
+            messages.error(request, 'Invalid time slot selected.')
+            return redirect('appointments:book_appointment', doctor_id=doctor_id)
+        
+        # Check for any existing appointment (including cancelled ones)
+        existing = Appointment.objects.filter(
+            doctor=doctor,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time
+        ).first()
+        
+        try:
+            if existing:
+                if existing.status in ['pending', 'confirmed']:
+                    messages.error(request, 'This time slot is already booked.')
+                    return redirect('appointments:book_appointment', doctor_id=doctor_id)
+                
+                # If it's a cancelled appointment, update it instead of creating a new one
+                existing.patient = patient
+                existing.status = 'pending'
+                existing.symptoms = symptoms
+                existing.notes = ''  # Clear any previous notes
+                existing.save()
+                
+                # Log the status change
+                AppointmentHistory.objects.create(
+                    appointment=existing,
+                    changed_by=request.user,
+                    old_status='cancelled',
+                    new_status='pending',
+                    change_reason='Appointment rebooked after cancellation'
+                )
+                
+                messages.success(request, 'Appointment rebooked successfully!')
+                return redirect('appointments:patient_dashboard')
             
-            # Check if slot is available
-            existing = Appointment.objects.filter(
+            # Create a new appointment if no existing one found
+            appointment = Appointment.objects.create(
+                patient=patient,
                 doctor=doctor,
                 appointment_date=appointment_date,
                 appointment_time=appointment_time,
-                status__in=['pending', 'confirmed']
-            ).exists()
+                symptoms=symptoms
+            )
             
-            if existing:
-                messages.error(request, 'This time slot is already booked.')
-            else:
-                appointment = Appointment.objects.create(
-                    patient=patient,
-                    doctor=doctor,
-                    appointment_date=appointment_date,
-                    appointment_time=appointment_time,
-                    symptoms=symptoms
-                )
-                messages.success(request, 'Appointment booked successfully!')
-                return redirect('appointments:patient_dashboard')
-                
+            # Log the appointment creation
+            AppointmentHistory.objects.create(
+                appointment=appointment,
+                changed_by=request.user,
+                old_status='',
+                new_status='pending',
+                change_reason='New appointment created'
+            )
+            
+            messages.success(request, 'Appointment booked successfully!')
+            return redirect('appointments:patient_dashboard')
+            
         except Exception as e:
-            messages.error(request, 'Error booking appointment. Please try again.')
+            messages.error(request, f'Error processing appointment: {str(e)}')
+            return redirect('appointments:book_appointment', doctor_id=doctor_id)
     
     # Get available time slots
     time_slots = TimeSlot.objects.all()
@@ -186,9 +233,23 @@ def cancel_appointment(request, appointment_id):
         return redirect('appointments:doctor_dashboard')
     
     if appointment.status in ['pending', 'confirmed']:
+        # Log the status change before updating
+        old_status = appointment.status
+        
+        # Update appointment status to cancelled
         appointment.status = 'cancelled'
         appointment.save()
-        messages.success(request, 'Appointment cancelled successfully.')
+        
+        # Log the change in AppointmentHistory
+        AppointmentHistory.objects.create(
+            appointment=appointment,
+            changed_by=request.user,
+            old_status=old_status,
+            new_status='cancelled',
+            change_reason='Appointment cancelled by user'
+        )
+        
+        messages.success(request, 'Appointment cancelled successfully. The time slot is now available for new bookings.')
     else:
         messages.error(request, 'This appointment cannot be cancelled.')
     
