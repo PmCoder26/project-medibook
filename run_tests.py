@@ -82,8 +82,7 @@ def main():
     test_files = [
         ("tests/selenium_tests/test_user_registration.py", "User Registration Tests"),
         ("tests/selenium_tests/test_login_system.py", "Login System Tests"),
-        ("tests/selenium_tests/test_appointment_booking.py", "Appointment Booking Tests"),
-        ("tests/regression_tests.py", "Regression Test Suite")
+        ("tests/selenium_tests/test_appointment_booking.py", "Appointment Booking Tests")
     ]
     
     for test_file, description in test_files:

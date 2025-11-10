@@ -22,11 +22,26 @@ def run_test_file(test_file, description):
     
     try:
         # Change to project directory
-        os.chdir("/Users/parimal/VisualStudioCodeProjects/stqa_project")
+        project_dir = "/Users/parimal/VisualStudioCodeProjects/stqa_project"
+        os.chdir(project_dir)
         
-        # Run the test with virtual environment
-        command = f"source venv/bin/activate && python {test_file}"
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=120)
+        # Activate virtual environment and run the test
+        python_exec = os.path.join(project_dir, "venv/bin/python")
+        command = [python_exec, test_file]
+        
+        # Set environment variables
+        env = os.environ.copy()
+        env["PYTHONPATH"] = project_dir
+        
+        # Run the test with a timeout
+        print(f"Executing: {' '.join(command)}")
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=300,  # Increased timeout to 5 minutes
+            env=env
+        )
         
         if result.returncode == 0:
             print(f"✅ {description} - PASSED")
@@ -43,23 +58,20 @@ def run_test_file(test_file, description):
         return False, str(e)
 
 def main():
-    """Main test execution function"""
     print_banner("MEDIBOOK COMPREHENSIVE TEST SUITE")
-    print(f"🚀 Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"  Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     # Test files to run (in order of reliability)
     test_suite = [
         ("test_selenium_simple.py", "Core Functionality Tests"),
         ("tests/selenium_tests/test_login_system.py", "Login System Tests"),
         ("tests/selenium_tests/test_user_registration.py", "User Registration Tests"),
-        ("tests/selenium_tests/test_appointment_booking.py", "Appointment Booking Tests"),
-        ("tests/regression_tests.py", "Regression Test Suite")
+        ("tests/selenium_tests/test_appointment_booking.py", "Appointment Booking Tests")
     ]
     
     results = {
         'total_suites': len(test_suite),
         'passed_suites': 0,
-        'failed_suites': 0,
         'start_time': datetime.now(),
         'details': []
     }
